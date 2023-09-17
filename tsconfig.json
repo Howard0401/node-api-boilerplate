@@ -17,9 +17,13 @@
       "@/*": ["*"]
     },
     "typeRoots": ["node_modules/@types"],
+    "types": ["node"
+    ],
     "esModuleInterop": true,
     "skipLibCheck": false,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
   },
   "include": ["typings.d.ts", "src/**/*"],
   "exclude": ["./dist", "./node_modules"]

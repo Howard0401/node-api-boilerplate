@@ -1,9 +1,8 @@
-import { makePublishArticle, PublishArticle } from '@/article/application/useCases/PublishArticle';
+import { DeleteArticle, makeDeleteArticle } from '@/article/application/useCases/DeleteArticle';
 import { Article } from '@/article/domain/Article';
 import { ArticleRepository } from '@/article/domain/ArticleRepository';
 import { BaseError } from '@/_lib/errors/BaseError';
 import { NotFoundError } from '@/_lib/errors/NotFoundError';
-import pino from 'pino';
 
 describe('DeleteArticle', () => {
   const id = 'mock-article-id';
@@ -26,29 +25,25 @@ describe('DeleteArticle', () => {
     getNextId: jest.fn(),
   };
 
-  let publishArticle: PublishArticle;
+  let deleteArticle: DeleteArticle;
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    publishArticle = makePublishArticle({
-      articleRepository,
-      logger: pino(),
-      // messageBundle: { getMessage: jest.fn(), useBundle: jest.fn(), updateBundle: jest.fn() },
-    });
+    deleteArticle = makeDeleteArticle({ articleRepository });
   });
 
-  it('should save the article as published', async () => {
-    await publishArticle(id);
+  it('should save the article as deleted', async () => {
+    await deleteArticle(id);
 
     expect(articleRepository.store).toHaveBeenCalledWith(
       expect.objectContaining({
         id: { value: id },
-        state: 'PUBLISHED',
+        state: 'DELETED',
       })
     );
   });
 
   it('should throw error if not found', async () => {
-    await expect(publishArticle('some-wrong-id')).rejects.toThrowError(BaseError);
+    await expect(deleteArticle('some-wrong-id')).rejects.toThrowError(BaseError);
   });
 });
