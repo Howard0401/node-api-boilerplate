@@ -1,3 +1,4 @@
+
 import { Collection, Db } from 'mongodb';
 import { MUUID } from 'uuid-mongodb';
 
@@ -24,6 +25,7 @@ const initArticleCollection = async (db: Db): Promise<ArticleCollection> => {
 
   return collection;
 };
+
 
 export { initArticleCollection };
 export type { ArticleSchema, ArticleCollection };

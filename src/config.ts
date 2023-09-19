@@ -26,12 +26,13 @@ const config: Configuration = {
     username: envString('DB_USER', 'blog'),
     password: envString('DB_PASS', 'blog'),
   },
-  mysql: {
-    database: envString('DB_NAME', 'test'),
-    host: envString('DB_HOST', 'localhost'),
-    username: envString('DB_USER', 'test'),
-    password: envString('DB_PASS', 'test'),
-    port: envNumber('DB_PORT', 3306),
+  mysqlDB: {
+    type: 'mysql',
+    database: envString('MYSQL_DATABASE', 'test_mysql_db'),
+    host: envString('MYSQL_HOST', 'localhost'),
+    username: envString('MYSQL_USER', 'test_mysql_user'),
+    password: envString('MYSQL_PASSWORD', 'test_mysql_password'),
+    port: envNumber('MYSQL_PORT', 3306),
   },
   redis: {
     host: envString('DB_NAME', 'localhost'),

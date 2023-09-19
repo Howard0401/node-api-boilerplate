@@ -1,42 +1,40 @@
-// import "reflect-metadata"
-// import { DataSource } from "typeorm"
-// // import { Photo } from "./entity/Photo"
+import { DataSource } from "typeorm"
 
-// const PostgresSource = new DataSource({
-//     type: "postgres",
-//     host: "localhost",
-//     port: 5432,
-//     username: "root",
-//     password: "admin",
-//     database: "test",
-//     // entities: [Photo],
-//     synchronize: true,
-//     logging: false,
-// })
+interface TypeORMDependencies { 
+  typeORM: DataSource;
+}
 
-// const MySQLSource = new DataSource({
-//     type: "mysql",
-//     host: "localhost",
-//     port: 3306,
-//     username: "root",
-//     password: "admin",
-//     database: "test",
-//     // entities: [Photo],
-//     synchronize: true,
-//     logging: false,
-// })
+type ThenArg<T> = T extends PromiseLike<infer U> ? U : T;
 
-// // // to initialize the initial connection with the database, register all entities
-// // // and "synchronize" database schema, call "initialize()" method of a newly created database
-// // // once in your application bootstrap
+type TypeORMInitializer = Record<string, (db: DataSource) => Promise<void>>;
 
-// // const makeMongoProvider =
-// //   ({ db }: Dependencies): MongoProvider =>
-// //   (collections) =>
-// //     Object.entries(collections).reduce(
-// //       (chain: Promise<any>, [key, promise]) =>
-// //         chain.then((acc) => promise(db).then((collection) => ({ ...acc, [key]: collection }))),
-// //       Promise.resolve()
-// //     );
+type TypeORMProvider = <Type extends TypeORMInitializer>(
+  init: Type
+) => Promise<{ [key in keyof Type]: ThenArg<ReturnType<Type[key]>>}>;
 
-// export { PostgresSource, MySQLSource }
+type InitializedTypeORM<Type extends TypeORMInitializer> = Promise<
+  { [key in keyof Type]: ThenArg<ReturnType<Type[key]>> }
+>;
+
+const makeTypeORMProvider =
+  ({ typeORM }: TypeORMDependencies): TypeORMProvider =>
+    (collections) =>
+      Object.entries(collections).reduce(
+        (chain: Promise<any>, [key, promise]) =>
+          chain.then((acc) => promise(typeORM).then((db) => ({ ...acc, [key]: db }))),
+        Promise.resolve()
+  );
+
+const withTypeORMProvider =
+  <Type extends TypeORMInitializer>(collections: Type) =>
+  ({ typeProvider }: { typeProvider: TypeORMProvider }): InitializedTypeORM<Type> =>
+  typeProvider(collections);
+
+
+  export { 
+    makeTypeORMProvider, 
+    withTypeORMProvider,
+  };
+  
+  export type { TypeORMProvider };
+  

@@ -13,6 +13,7 @@
 //   version: number;
 // };
 
+
 // type ArticleCollection = Collection<ArticleSchema>;
 
 // const initArticleCollection = async (db: Db): Promise<ArticleCollection> => {

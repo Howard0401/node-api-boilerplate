@@ -1,8 +1,8 @@
 import { Comment } from '@/comment/domain/Comment';
 import { CommentId } from '@/comment/domain/CommentId';
-import { Repository } from '@/_lib/DDD';
+import { MongoRepository } from '@/_lib/DDD';
 
-type CommentRepository = Repository<Comment.Type> & {
+type CommentRepository = MongoRepository<Comment.Type> & {
   findById(id: CommentId['value']): Promise<Comment.Type>;
 };
 

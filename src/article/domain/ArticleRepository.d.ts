@@ -1,7 +1,7 @@
 import { Article } from '@/article/domain/Article';
-import { Repository } from '@/_lib/DDD';
+import { MongoRepository } from '@/_lib/DDD';
 
-type ArticleRepository = Repository<Article.Type> & {
+type ArticleRepository = MongoRepository<Article.Type> & {
   findById(id: string): Promise<Article.Type>;
 };
 

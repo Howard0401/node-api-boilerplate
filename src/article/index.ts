@@ -3,6 +3,7 @@ import { CreateArticle, makeCreateArticle } from '@/article/application/useCases
 import { DeleteArticle, makeDeleteArticle } from '@/article/application/useCases/DeleteArticle';
 import { makePublishArticle, PublishArticle } from '@/article/application/useCases/PublishArticle';
 import { ArticleRepository } from '@/article/domain/ArticleRepository';
+import { WalletRepository } from '@/wallet/domain/WalletRepository';
 import { ArticleCollection, initArticleCollection } from '@/article/infrastructure/ArticleCollection';
 import { makeMongoArticleRepository } from '@/article/infrastructure/MongoArticleRepository';
 import { makeArticleController } from '@/article/interface/http/articleController';
@@ -17,7 +18,7 @@ const articleModule = makeModule('article', async ({ container: { register }, in
   const [collections] = await initialize(
     withMongoProvider({
       articleCollection: initArticleCollection,
-    })
+    }),
   );
 
   register({
@@ -35,6 +36,7 @@ const articleModule = makeModule('article', async ({ container: { register }, in
 type ArticleRegistry = {
   articleCollection: ArticleCollection;
   articleRepository: ArticleRepository;
+  walletRepository: WalletRepository;
   createArticle: CreateArticle;
   publishArticle: PublishArticle;
   deleteArticle: DeleteArticle;

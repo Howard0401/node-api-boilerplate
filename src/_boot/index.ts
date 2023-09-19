@@ -1,7 +1,7 @@
 import { server, ServerConfig, ServerRegistry } from '@/_boot/server';
 import { appModules, AppModulesConfig, AppModulesRegistry } from '@/_boot/appModules';
 import { asValue } from 'awilix';
-import { mongoDB, DatabaseConfig, DatabaseRegistry } from '@/_boot/database';
+import { mongoDB, mysql, DatabaseConfig, DatabaseRegistry } from '@/_boot/database';
 import { repl, REPLConfig } from '@/_boot/repl';
 import { withContext } from '@/context';
 import { Configuration } from '@/config';
@@ -12,7 +12,12 @@ import { EnvironmentConfig } from '@/_lib/Environment';
 import { ContextApp } from '@/_lib/Context';
 import { Container, Initialize } from '@/container';
 
-type MainConfig = ServerConfig & DatabaseConfig & EnvironmentConfig & REPLConfig & SwaggerConfig & AppModulesConfig;
+type MainConfig = ServerConfig & 
+                  DatabaseConfig & 
+                  EnvironmentConfig & 
+                  REPLConfig & 
+                  SwaggerConfig & 
+                  AppModulesConfig;
 
 const main = withContext(async ({ app, container, config, bootstrap, logger, initialize }) => {
   container.register({
@@ -24,7 +29,7 @@ const main = withContext(async ({ app, container, config, bootstrap, logger, ini
     config: asValue(config),
   });
 
-  await bootstrap(mongoDB, server, swagger, pubSub, repl, ...appModules);
+  await bootstrap(mongoDB, mysql, server, swagger, pubSub, repl, ...appModules);
 });
 
 type MainRegistry = {

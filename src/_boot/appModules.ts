@@ -5,7 +5,7 @@ import { commentModule, CommentRegistry } from '@/comment';
 // eslint-disable-next-line @typescript-eslint/ban-types
 type AppModulesConfig = {};
 
-const appModules = [articleModule, commentModule]//];
+const appModules = [articleModule, commentModule,]//];
 
 type AppModulesRegistry = ArticleRegistry & CommentRegistry// & WalletRepository;
 

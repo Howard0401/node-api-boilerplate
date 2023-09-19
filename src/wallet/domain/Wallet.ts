@@ -1,71 +1,35 @@
-import { AggregateRoot } from '@/_lib/DDD';
 import { makeWithInvariants } from '@/_lib/WithInvariants';
-import { WalletId } from '@/_sharedKernel/domain/WalletId';
+import { Wallet as _walletDTO } from "@/_model/wallet";
 
 namespace Wallet {
-  type Wallet = AggregateRoot<WalletId> &
-    Readonly<{
-      email: string;
-      title: string;
-      content: string;
-      state: 'DRAFT' | 'PUBLISHED' | 'DELETED';
-      publishedAt: Date | null;
-      createdAt: Date;
-      updatedAt: Date;
-      version: number;
-    }>;
+  type Wallet = _walletDTO;
 
-  // type PublishedArticle = Omit<Wallet, 'publishedAt' | 'state'> & Readonly<{ state: 'PUBLISHED'; publishedAt: Date}>;
-
-  const withInvariants = makeWithInvariants<Wallet>((self, assert) => {
-    assert(self.email?.length > 0);
-    assert(self.content?.length > 0);
+  const withInvariants = makeWithInvariants<_walletDTO>((self, assert) => {
+    if (self.id) {
+      assert(self.id > 0);
+    }
+    assert(self.address.length > 0);
   });
 
-  type WalletProps = Readonly<{
-    id: WalletId;
-    title: string;
-    content: string;
-    email: string;
+  export type WalletProps = Readonly<{
+    address: string;
+    state: number;
   }>;
 
+  // create the new data of model
   export const create = withInvariants(
-    (props: WalletProps): Wallet => ({
-      id: props.id,
-      email: props.email,
-      title: props.title,
-      content: props.content,
-      state: 'DRAFT',
-      publishedAt: null,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      version: 0,
+    (props: WalletProps): _walletDTO => ({
+      id: 0,
+      address: props.address,
+      description: "test-" + props.state,
+      state: props.state,
+      filename: "string",
+      views: 0,
+      isPublished: true,
+      createdAtu: new Date().getUTCMilliseconds(),
+      updatedAtu: new Date().getMilliseconds(),
     })
   );
-
-  // export const publish = withInvariants(
-  //   (self: Wallet): PublishedArticle => ({
-  //     ...self,
-  //     state: 'PUBLISHED',
-  //     publishedAt: new Date(),
-  //   })
-  // );
-
-  // export const markAsDeleted = withInvariants(
-  //   (self: Wallet): Wallet => ({
-  //     ...self,
-  //     state: 'DELETED',
-  //   })
-  // );
-
-  // export const changeTitle = withInvariants(
-  //   (self: Wallet, title: string): Wallet => ({
-  //     ...self,
-  //     title,
-  //   })
-  // );
-
-  // export const isPublished = (self: Wallet): self is PublishedArticle => self.state === 'PUBLISHED';
 
   export type Type = Wallet;
 }

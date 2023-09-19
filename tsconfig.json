@@ -21,7 +21,6 @@
       "node",
       "jest",
       "express",
-      "crypto",
     ],
     "esModuleInterop": true,
     "skipLibCheck": false,

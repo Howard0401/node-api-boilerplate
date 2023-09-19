@@ -18,7 +18,7 @@ services:
       - 3306:3306
     # volumes:
     #   - mysql_data:/var/lib/mysql
-    environment:
+    environment: 
       MYSQL_ROOT_PASSWORD: test_mysql_password
       MYSQL_DATABASE: test_mysql_db
       MYSQL_USER: test_mysql_user

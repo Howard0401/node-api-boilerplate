@@ -3,10 +3,15 @@ import { withContext } from '@/context';
 import { main } from '@/_boot';
 import { Db } from 'mongodb';
 import supertest, { SuperTest, Test } from 'supertest';
+import { DataSource } from 'typeorm';
 
 type Dependencies = {
   mongo: Db;
+  mysqlDB: DataSource;
 };
+// type TypeORMDependencies =  { 
+//   mysqlDB: DataSource;
+// }
 
 type TestControls = Readonly<{
   request: () => SuperTest<Test>;
@@ -28,11 +33,14 @@ const appRunning = withContext(
 );
 
 const makeClearDatabase =
-  ({ mongo }: Dependencies) =>
+  ({ mongo,  mysqlDB }: Dependencies) =>
   async (): Promise<void> => {
     const collections = await mongo.collections();
-
-    await Promise.all(collections.map((collection) => collection.deleteMany({})));
+    await Promise.all(
+      [
+        collections.map((collection) => collection.deleteMany({})), 
+        mysqlDB.dropDatabase(),
+      ]);
   };
 
 const makeTestControls = async (): Promise<TestControls> => {

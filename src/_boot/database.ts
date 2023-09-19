@@ -1,8 +1,11 @@
+import "reflect-metadata"
 import { makeModule } from '@/context';
 import { makeMongoProvider, MongoProvider } from '@/_lib/MongoProvider';
+import { makeTypeORMProvider, TypeORMProvider} from '@/_lib/TypeORMProvider';
 import { DataSource } from "typeorm"
 import { asValue } from 'awilix';
 import { Db, MongoClient } from 'mongodb';
+import { Wallet } from "@/_model/wallet";
 
 type DatabaseConfig = {
   mongodb: {
@@ -11,7 +14,8 @@ type DatabaseConfig = {
     username: string;
     password: string;
   };
-  mysql: {
+  mysqlDB: {
+    type: string;
     database: string;
     host: string;
     username: string;
@@ -24,41 +28,6 @@ type DatabaseConfig = {
   };
 };
 
-const mysql = makeModule('type-orm-mysql', async ({ container: { register }, config: { mysql } }) => {
-  // const client = new MongoClient(mysql.host, {
-  //   auth: { username: mysql.username, password: mysql.password },
-  // });
-
-  const mysqlSource = new DataSource({
-    type: "mysql",
-    host: "localhost",
-    port: 3306,
-    username: "root",
-    password: "admin",
-    database: "test",
-    // entities: [Photo],
-    synchronize: true,
-    logging: false,
-  })
-  // try {
-  const mysqlDB = await mysqlSource.initialize();
-  // } catch (error) {
-    // console.error(error);
-  // }
-
-  // const db = client.db(mysql.database);
-
-  // const mongoProvider = makeMongoProvider({ db });
-
-  register({
-    // mysql: asValue(mysqlDB),
-    // mongoProvider: asValue(mongoProvider),
-  });
-
-  return async () => {
-    await mysqlDB.close();
-  };
-});
 
 const mongoDB = makeModule('mongo-db', async ({ container: { register }, config: { mongodb } }) => {
   const client = new MongoClient(mongodb.host, {
@@ -82,9 +51,42 @@ const mongoDB = makeModule('mongo-db', async ({ container: { register }, config:
 });
 
 
+const mysql = makeModule('type-orm-mysql', async ({ container: { register }, config: { mysqlDB } }) => {
+  const mysqlSource = new DataSource({
+    type: "mysql",
+    host: mysqlDB.host,
+    port: mysqlDB.port,
+    username: mysqlDB.username,
+    password: mysqlDB.password,
+    database: mysqlDB.database,
+    entities: [Wallet],
+    synchronize: true,
+    logging: false,
+  })
+
+  try {
+    const typeORM = await mysqlSource.initialize();
+    const typeORMProvider =  makeTypeORMProvider({ typeORM });
+
+    register({
+      mysqlDB: asValue(typeORM),
+      mysqlProvider: asValue(typeORMProvider),
+    });
+
+    return async () => {
+      return Promise.resolve();
+    };
+  } catch (error) {
+    console.error('init db err',error);
+    mysqlSource.destroy();
+  }
+});
+
+
 type DatabaseRegistry = {
   mongo: Db;
-  // mysql: DataSource;
+  mysqlDB: DataSource;
+  mysqlProvider: TypeORMProvider;
   mongoProvider: MongoProvider;
 };
 
