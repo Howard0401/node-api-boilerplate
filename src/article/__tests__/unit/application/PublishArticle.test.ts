@@ -36,7 +36,7 @@ describe('DeleteArticle', () => {
       // messageBundle: { getMessage: jest.fn(), useBundle: jest.fn(), updateBundle: jest.fn() },
     });
   });
-
+// 
   it('should save the article as published', async () => {
     await publishArticle(id);
 

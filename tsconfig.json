@@ -17,11 +17,15 @@
       "@/*": ["*"]
     },
     "typeRoots": ["node_modules/@types"],
-    "types": ["node"
+    "types": [
+      "node",
+      "jest",
+      "express",
+      "crypto",
     ],
     "esModuleInterop": true,
     "skipLibCheck": false,
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
   },
