@@ -2,45 +2,57 @@ version: '3.9'
 
 services:
   mongodb:
-    container_name: blog-mongodb
+    container_name: mongodb
     image: mongo:4.2
     ports:
       - 27017:27017
     volumes:
       - mongo_data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: blog
-      MONGO_INITDB_ROOT_PASSWORD: blog
-
-  mongo-express:
-    container_name: blog-mongo-express
-    image: mongo-express
-    depends_on:
-      - mongodb
+      MONGO_INITDB_ROOT_USERNAME: test_mongo_user
+      MONGO_INITDB_ROOT_PASSWORD: test_mongo_password
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
     ports:
-      - 8081:8081
+      - 3306:3306
+    # volumes:
+    #   - mysql_data:/var/lib/mysql
     environment:
-      ME_CONFIG_MONGODB_URL: mongodb://blog:blog@blog-mongodb:27017
+      MYSQL_ROOT_PASSWORD: test_mysql_password
+      MYSQL_DATABASE: test_mysql_db
+      MYSQL_USER: test_mysql_user
+      MYSQL_PASSWORD: test_mysql_password
+      
+  # mongo-express:
+  #   container_name: blog-mongo-express
+  #   image: mongo-express
+  #   depends_on:
+  #     - mongodb
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_URL: mongodb://blog:blog@blog-mongodb:27017
 
-  dev:
-    container_name: blog-dev
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile.dev
-      args:
-        USER_ID: ${USER_ID:-1000}
-        GROUP_ID: ${GROUP_ID:-1000}
-    depends_on:
-      - mongodb
-    network_mode: host
-    environment:
-      - NODE_ENV=${NODE_ENV:-development}
-    volumes:
-      - .:/opt/node-app
-      - npm_cache:/home/node/.npm-packages
-    tty: true
-    profiles:
-      - dev
+  # dev:
+  #   container_name: blog-dev
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/Dockerfile.dev
+  #     args:
+  #       USER_ID: ${USER_ID:-1000}
+  #       GROUP_ID: ${GROUP_ID:-1000}
+  #   depends_on:
+  #     - mongodb
+  #   network_mode: host
+  #   environment:
+  #     - NODE_ENV=${NODE_ENV:-development}
+  #   volumes:
+  #     - .:/opt/node-app
+  #     - npm_cache:/home/node/.npm-packages
+  #   tty: true
+  #   profiles:
+  #     - dev
 
 volumes:
   npm_cache:
