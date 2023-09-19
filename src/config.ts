@@ -15,7 +15,7 @@ const config: Configuration = {
     port: envNumber('PORT', 3000),
   },
   swagger: {
-    title: 'Blog API',
+    title: 'Integrate API',
     version: '1.0.0',
     basePath: '/api',
     docEndpoint: '/api-docs',
