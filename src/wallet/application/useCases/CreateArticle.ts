@@ -1,38 +1,35 @@
-import { ArticleRepository } from '@/article/domain/ArticleRepository';
-import { Article } from '@/article/domain/Article';
+
 import { ApplicationService } from '@/_lib/DDD';
-import { ArticleCreatedEvent } from '@/article/application/events/ArticleCreatedEvent';
 import { eventProvider } from '@/_lib/pubSub/EventEmitterProvider';
+import { Wallet } from '@/wallet/domain/Wallet';
+import { WalletRepository } from '@/wallet/domain/WalletRepository';
 
 type Dependencies = {
-  articleRepository: ArticleRepository;
+  walletRepository: WalletRepository;
 };
 
-type CreateArticleDTO = {
-  title: string;
-  content: string;
+type CreateWalletDTO = {
+  address: string;
 };
 
-type CreateArticle = ApplicationService<CreateArticleDTO, string>;
+type CreateWallet = ApplicationService<CreateWalletDTO, string>;
 
-const makeCreateArticle = eventProvider<Dependencies, CreateArticle>(
-  ({ articleRepository }, enqueue) =>
-    async (payload: CreateArticleDTO) => {
-      const id = await articleRepository.getNextId();
-
-      const article = Article.create({
-        id,
-        title: payload.title,
-        content: payload.content,
-      });
-
-      await articleRepository.store(article);
-
-      enqueue(ArticleCreatedEvent.create(article));
-
-      return id.value;
+const makeCreateWallet = eventProvider<Dependencies, CreateWallet>(
+  ({  walletRepository }, enqueue) =>
+    async (payload: CreateWalletDTO) => {
+      const props : Wallet.WalletProps = { 
+        address: payload.address,
+        state: 0,
+      };
+      console.log('makeCreateWallet props', props);
+      const w : Wallet.Type = Wallet.create(props);
+      const createdWallet = await walletRepository.createNewWallet(w);
+      console.log('createdWallet', JSON.stringify(createdWallet));
+      // enqueue(ArticleCreatedEvent.create(article));
+  
+      return "success";
     }
 );
 
-export { makeCreateArticle };
-export type { CreateArticle };
+export { makeCreateWallet };
+export type { CreateWallet };

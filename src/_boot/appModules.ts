@@ -1,13 +1,13 @@
 import { articleModule, ArticleRegistry } from '@/article';
 import { commentModule, CommentRegistry } from '@/comment';
-// import { WalletRepository } from '@/wallet/domain/WalletRepository';
+import { walletModule, WalletRegistry } from '@/wallet';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type AppModulesConfig = {};
 
-const appModules = [articleModule, commentModule,]//];
+const appModules = [articleModule, commentModule, walletModule]//];
 
-type AppModulesRegistry = ArticleRegistry & CommentRegistry// & WalletRepository;
+type AppModulesRegistry = ArticleRegistry & CommentRegistry & WalletRegistry;
 
 export { appModules };
-export type { AppModulesConfig, AppModulesRegistry};// WalletRepository };
+export type { AppModulesConfig, AppModulesRegistry, WalletRegistry};

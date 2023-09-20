@@ -5,7 +5,7 @@ import { Wallet } from '@/wallet/domain/Wallet';
 // import { NotFoundError } from '@/_lib/errors/NotFoundError';
 // import { ArticleId } from '@/_sharedKernel/domain/ArticleId';
 // import { ArticleIdProvider } from '@/_sharedKernel/infrastructure/ArticleIdProvider';
-import { v4 } from 'uuid-mongodb';
+// import { v4 } from 'uuid-mongodb';
 
 type Dependencies = {
   walletDao: WalletRepository;
@@ -13,16 +13,18 @@ type Dependencies = {
 
 const makeMysqlWalletRepository = ({ walletDao }: Dependencies): WalletRepository => ({
   async createNewWallet(): Promise<Wallet.Type> {
+    console.log('walletDao', walletDao);
     try {
       const prop :Wallet.WalletProps = {
-        address: v4().toString(),
+        address: "test-123",
         state: 0,
       }
+      console.log('makeMysqlWalletRepository prop',prop);
       const w = Wallet.create(prop);
       const data = await walletDao.createNewWallet(w);
       return Promise.resolve(data);
     } catch (error) {
-      console.log(error);
+      console.log('makeMysqlWalletRepository error',error);
       return Promise.reject(error);
     }
   }

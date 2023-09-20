@@ -1,14 +1,14 @@
-import { deleteArticleHandler } from '@/article/interface/http/articleController/DeleteArticleHandler';
+// import { deleteArticleHandler } from '@/article/interface/http/articleController/DeleteArticleHandler';
 import { Router } from 'express';
-import { createArticleHandler } from './CreateArticleHandler';
-import { findArticlesHandler } from './FindArticlesHandler';
-import { publishArticleHandler } from './PublishArticleHandler';
+import { createWalletHandler } from './CreateWalletHandler';
+// import { findArticlesHandler } from './FindArticlesHandler';
+// import { publishArticleHandler } from './PublishArticleHandler';
 
 type Dependencies = {
   apiRouter: Router;
 };
 
-const makeArticleController = ({ apiRouter }: Dependencies) => {
+const makeWalletController = ({ apiRouter }: Dependencies) => {
   const router = Router();
 
   /**
@@ -29,12 +29,12 @@ const makeArticleController = ({ apiRouter }: Dependencies) => {
    *           items:
    *             $ref: '#/definitions/ArticleDTO'
    */
-  router.get('/articles', findArticlesHandler);
-  router.post('/articles', createArticleHandler);
-  router.delete('/articles/:articleId', deleteArticleHandler);
-  router.patch('/articles/:articleId/publish', publishArticleHandler);
+  // router.get('/articles', findArticlesHandler);
+  router.post('/wallet', createWalletHandler);
+  // router.delete('/articles/:articleId', deleteArticleHandler);
+  // router.patch('/articles/:articleId/publish', publishArticleHandler);
 
   apiRouter.use(router);
 };
 
-export { makeArticleController };
+export { makeWalletController };

@@ -14,8 +14,10 @@ import { asFunction } from 'awilix';
 import { makeModule } from '@/context';
 // import { makeArticleCreatedEmailListener } from '@/article/interface/email/ArticleCreatedEmailListener';
 // import { Wallet } from './domain/Wallet';
-import { WalletRepository } from './domain/WalletRepository';
+import { WalletRepository } from '@/wallet/domain/WalletRepository';
 import { makeMysqlWalletRepository } from './infrastructure/WalletRepository';
+import { CreateWallet, makeCreateWallet } from '@/wallet/application/useCases/CreateArticle';
+import { makeWalletController } from './interface/http/articleController';
 
 const walletModule = makeModule('wallet', async ({ container: { register }, initialize }) => {
   // const [collections] = await initialize(
@@ -27,21 +29,23 @@ const walletModule = makeModule('wallet', async ({ container: { register }, init
   register({
     walletRepository: asFunction(makeMysqlWalletRepository),
     // ...toContainerValues(collections),
-    // articleRepository: asFunction(makeMongoArticleRepository),
+    createWallet: asFunction(makeCreateWallet),
     // createArticle: asFunction(makeCreateArticle),
     // publishArticle: asFunction(makePublishArticle),
     // deleteArticle: asFunction(makeDeleteArticle),
     // findArticles: asFunction(makeMongoFindArticles),
   });
 
-  await initialize();
+  await initialize( 
+    makeWalletController 
+  );
 });
 
 type WalletRegistry = {
   walletRepository: WalletRepository;
   // articleCollection: ArticleCollection;
   // articleRepository: ArticleRepository;
-  // createArticle: CreateArticle;
+  createWallet: CreateWallet;
   // publishArticle: PublishArticle;
   // deleteArticle: DeleteArticle;
   // findArticles: FindArticles;
